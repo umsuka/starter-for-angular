@@ -1,9 +1,8 @@
 import {
   Component,
-  OnInit,
   ViewChild,
   ElementRef,
-  AfterViewInit,
+  AfterViewInit, NgZone
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Client } from 'appwrite';
@@ -24,10 +23,11 @@ interface Log {
   styleUrls: ['./app.component.css'],
   imports: [CommonModule, DatePipe],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements AfterViewInit {
   @ViewChild('detailsRef') detailsRef!: ElementRef;
 
   detailHeight: number = 0;
+  private resizeObserver!: ResizeObserver;
   logs: Log[] = [];
   status: 'idle' | 'loading' | 'success' | 'error' = 'idle';
   showLogs: boolean = false;
@@ -39,29 +39,23 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   private client: Client;
 
-  constructor() {
+  constructor(private zone: NgZone) {
     this.client = new Client()
       .setEndpoint(environment.appwriteEndpoint)
       .setProject(environment.appwriteProjectId);
   }
 
-  ngOnInit() {
-    this.updateHeight();
-    window.addEventListener('resize', () => this.updateHeight());
-  }
-
   ngAfterViewInit() {
-    this.updateHeight();
-  }
-
-  ngOnDestroy() {
-    window.removeEventListener('resize', () => this.updateHeight());
-  }
-
-  updateHeight() {
-    if (this.detailsRef?.nativeElement) {
-      this.detailHeight = this.detailsRef.nativeElement.clientHeight;
-    }
+    this.resizeObserver = new ResizeObserver(entries => {
+      this.zone.run(() => {
+        for (let entry of entries) {
+          if (entry.target === this.detailsRef?.nativeElement) {
+            this.detailHeight = entry.contentRect.height;
+          }
+        }
+      })
+    });
+    this.resizeObserver.observe(this.detailsRef.nativeElement);
   }
 
   async sendPing() {
