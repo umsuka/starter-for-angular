@@ -58,6 +58,10 @@ export class AppComponent implements AfterViewInit {
     this.resizeObserver.observe(this.detailsRef.nativeElement);
   }
 
+  ngOnDestroy() {
+    this.resizeObserver.unobserve(this.detailsRef.nativeElement);
+  }
+
   async sendPing() {
     if (this.status === 'loading') return;
     this.status = 'loading';
