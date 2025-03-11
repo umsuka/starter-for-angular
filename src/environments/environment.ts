@@ -3,7 +3,7 @@ export const environment: {
   appwriteProjectId: string;
   appwriteProjectName: string;
 } = {
-  appwriteEndpoint: '',
-  appwriteProjectId: '',
-  appwriteProjectName: '',
+  appwriteEndpoint: '[appwriteEndpoint]',
+  appwriteProjectId: '[appwriteProjectId]',
+  appwriteProjectName: '[appwriteProjectName]',
 };
