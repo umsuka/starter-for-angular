@@ -7,6 +7,8 @@ import {
 import { CommonModule, DatePipe } from '@angular/common';
 import { Client } from 'appwrite';
 import { environment } from '../environments/environment';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 interface Log {
   date: Date;
@@ -21,7 +23,7 @@ interface Log {
   templateUrl: './app.component.html',
   standalone: true,
   styleUrls: ['./app.component.css'],
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule,  RouterModule],
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild('detailsRef') detailsRef!: ElementRef;
